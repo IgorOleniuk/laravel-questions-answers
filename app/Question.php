@@ -7,6 +7,8 @@ use Illuminate\Support\Str;
 
 class Question extends Model
 {
+    use VotableTrait;
+
     protected $guarded = [];
 
     public function user()
@@ -48,7 +50,7 @@ class Question extends Model
 
     public function answers()
     {
-        return $this->hasMany('App\Answer');
+        return $this->hasMany('App\Answer')->orderBy('votes_count', 'DESC');
     }
 
     public function acceptBestAnswer(Answer $answer) {
@@ -70,20 +72,5 @@ class Question extends Model
 
     public function getFavoritesCountAttribute() {
         return $this->favorites->count();
-    }
-
-    public function votes()
-    {
-        return $this->morphToMany('App\User', 'votable');
-    }
-
-    public function upVotes()
-    {
-        return $this->votes()->wherePivot('vote', 1);
-    }
-
-    public function downVotes()
-    {
-        return $this->votes()->wherePivot('vote', -1);
     }
 }
