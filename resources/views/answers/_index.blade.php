@@ -4,7 +4,7 @@
         <div class="card">
             <div class="card-body">
                 <div class="card-title">
-                    <h2>{{ $answerCount . " " . str_plural('Answer', $answerCount) }}</h2>
+                    <h2>{{ $answersCount . " " . str_plural('Answer', $answersCount) }}</h2>
                     @include('layouts._messages')
                 </div>
                 <hr>

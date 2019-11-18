@@ -8,9 +8,6 @@ use Illuminate\Http\Request;
 
 class AnswersController extends Controller
 {
-
-
-
     /**
      * Store a newly created resource in storage.
      *
@@ -19,13 +16,12 @@ class AnswersController extends Controller
      */
     public function store(Question $question, Request $request)
     {
-        $question->answers()->create( $request->validate([
-            'body' => 'required',
-        ]) + ['user_id' => \Auth::id()]);
+        $question->answers()->create($request->validate([
+                'body' => 'required'
+            ]) + ['user_id' => \Auth::id()]);
 
-        return back()->with('success', 'Your answer has been submitted successfully');
+        return back()->with('success', "Your answer has been submitted successfully");
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -37,7 +33,7 @@ class AnswersController extends Controller
     {
         $this->authorize('update', $answer);
 
-        return view('answers._edit', compact('question', 'answer'));
+        return view('answers.edit', compact('question', 'answer'));
     }
 
     /**
@@ -47,15 +43,15 @@ class AnswersController extends Controller
      * @param  \App\Answer  $answer
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,Question $question, Answer $answer)
+    public function update(Request $request, Question $question, Answer $answer)
     {
         $this->authorize('update', $answer);
 
         $answer->update($request->validate([
-            'body' => 'required'
+            'body' => 'required',
         ]));
 
-        return redirect()->route('questions.show', $question->slug)->with('success', 'Your answer has been update');
+        return redirect()->route('questions.show', $question->slug)->with('success', 'Your answer has been updated');
     }
 
     /**
@@ -70,6 +66,6 @@ class AnswersController extends Controller
 
         $answer->delete();
 
-        return back()->with('success', 'Your answer has been removed ');
+        return back()->with('success', "Your answer has been removed");
     }
 }

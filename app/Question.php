@@ -3,74 +3,90 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Question extends Model
 {
     use VotableTrait;
 
-    protected $guarded = [];
+    protected $fillable = ['title', 'body'];
 
-    public function user()
-    {
-      return $this->belongsTo('App\User');
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
     public function setTitleAttribute($value)
     {
-      $this->attributes['title'] = $value;
-      $this->attributes['slug'] = Str::slug($value);
+        $this->attributes['title'] = $value;
+        $this->attributes['slug'] = str_slug($value);
     }
+
+    // public function setBodyAttribute($value)
+    // {
+    //     $this->attributes['body'] = clen($value);
+    // }
 
     public function getUrlAttribute()
     {
-      return route('questions.show', $this->slug);
+        return route("questions.show", $this->slug);
     }
 
     public function getCreatedDateAttribute()
     {
-      return $this->created_at->diffForHumans();
+        return $this->created_at->diffForHumans();
     }
 
     public function getStatusAttribute()
     {
-      if($this->answers_count > 0) {
-        if($this->best_answer_id == 1) {
-          return "answered-accepted";
+        if ($this->answers_count > 0) {
+            if ($this->best_answer_id) {
+                return "answered-accepted";
+            }
+            return "answered";
         }
-        return "answered";
-      }
-      return 'unanswered';
+        return "unanswered";
     }
 
     public function getBodyHtmlAttribute()
     {
-      return \Parsedown::instance()->text($this->body);
+        return \Parsedown::instance()->text($this->body);
     }
 
     public function answers()
     {
-        return $this->hasMany('App\Answer')->orderBy('votes_count', 'DESC');
+        return $this->hasMany(Answer::class)->orderBy('votes_count', 'DESC');
     }
 
-    public function acceptBestAnswer(Answer $answer) {
-        $this->best_answer_id  = $answer->id;
+    public function acceptBestAnswer(Answer $answer)
+    {
+        $this->best_answer_id = $answer->id;
         $this->save();
     }
 
-    public function favorites() {
-        return $this->belongsToMany('App\User', 'favorites')->withTimestamps();
+    public function favorites()
+    {
+        return $this->belongsToMany(User::class, 'favorites')->withTimestamps(); //, 'question_id', 'user_id');
     }
 
-    public function isFavorited() {
+    public function isFavorited()
+    {
         return $this->favorites()->where('user_id', auth()->id())->count() > 0;
     }
 
-    public function getIsFavoritedAttribute() {
+    public function getIsFavoritedAttribute()
+    {
         return $this->isFavorited();
     }
 
-    public function getFavoritesCountAttribute() {
+    public function getFavoritesCountAttribute()
+    {
         return $this->favorites->count();
     }
+
+    public function getExcerptAttribute()
+    {
+        return $this->excerpt(250);
+    }
+
+
 }
+
