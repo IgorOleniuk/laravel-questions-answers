@@ -25,24 +25,57 @@ export default {
     },
 
     update () {
-      axios.patch(`/questions/${this.questionId}/answers/${this.id} `, {
+      axios.patch(this.endpoint, {
         body: this.body
       })
       .then(res => {
         this.editing = false;
         this.bodyHtml = res.data.body_html;
-        alert(res.data.message);
+        this.$toast.success(res.data.message, 'Success', { timeout: 3000});
       })
       .catch(err => {
-        alert(err.response.data.message);
-        console.log('Someting went wrong');
+        this.$toast.error(err.res.data.message, 'Error', { timeout: 3000});
       });
-    }
+    },
+
+    destroy() {
+        this.toast.question('Are you sure about that?', 'Confirm', {
+        timeout: 20000,
+        close: false,
+        overlay: true,
+        displayMode: 'once',
+        id: 'question',
+        zindex: 999,
+        title: 'Hey',
+        position: 'center',
+        buttons: [
+          ['<button><b>YES</b></button>', (instance, toast) => {
+              axios.delete(this.endpoint)
+              .then(res => {
+                $(this.$el).fadeOut(500, () => {
+                  this.$toast.success(res.data.message, 'Success', { timeout: 3000});
+                });
+              });
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+          }, true],
+          ['<button>NO</button>', function (instance, toast) {
+
+            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+          }],
+        ],
+      });
+    },
   },
 
   computed: {
     isInvalid () {
       return this.body.length < 5;
+    },
+
+    endpoint () {
+      return `/questions/${this.questionId}/answers/${this.id}`;
     }
   }
 };
