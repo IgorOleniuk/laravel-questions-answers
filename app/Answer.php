@@ -10,6 +10,8 @@ class Answer extends Model
 
     protected $fillable = ['body', 'user_id'];
 
+    protected $appends = ['created_date', 'bodyHtml'];
+
     public function question()
     {
         return $this->belongsTo(Question::class);
