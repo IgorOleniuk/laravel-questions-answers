@@ -27,6 +27,10 @@ Vue.use(VueIziToast);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 Vue.component('user-info', require('./components/UserInfo.vue').default);
 Vue.component('answer', require('./components/Answer.vue').default);
+Vue.component('favorite', require('./components/Favorite.vue').default);
+Vue.component('accept', require('./components/Accept.vue').default);
+
+
 
 
 
