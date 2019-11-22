@@ -36,8 +36,14 @@
 </template>
 
 <script>
+import MEditor from './MEditor.vue';
+
 export default {
   props: ['question'],
+
+  components: {
+    MEditor
+  },
 
   data () {
     return {

@@ -30,6 +30,7 @@ Vue.component('answer', require('./components/Answer.vue').default);
 Vue.component('vote', require('./components/Vote.vue').default);
 Vue.component('new-answer', require('./components/NewAnswer.vue').default);
 Vue.component('question', require('./components/Question.vue').default);
+Vue.component('m-editor', require('./components/MEditor.vue').default);
 
 
 
